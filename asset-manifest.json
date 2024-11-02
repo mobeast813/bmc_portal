@@ -1,0 +1,37 @@
+{
+  "files": {
+    "main.css": "/bmc_portal/bmc_portal/static/css/main.f385714f.css",
+    "main.js": "/bmc_portal/bmc_portal/static/js/main.b53c1f30.js",
+    "static/js/128.22df0a75.chunk.js": "/bmc_portal/bmc_portal/static/js/128.22df0a75.chunk.js",
+    "static/js/908.746b4398.chunk.js": "/bmc_portal/bmc_portal/static/js/908.746b4398.chunk.js",
+    "static/js/880.1c21afdc.chunk.js": "/bmc_portal/bmc_portal/static/js/880.1c21afdc.chunk.js",
+    "static/js/323.20263103.chunk.js": "/bmc_portal/bmc_portal/static/js/323.20263103.chunk.js",
+    "static/js/898.e66dac28.chunk.js": "/bmc_portal/bmc_portal/static/js/898.e66dac28.chunk.js",
+    "static/js/282.ea1ef603.chunk.js": "/bmc_portal/bmc_portal/static/js/282.ea1ef603.chunk.js",
+    "static/js/50.1e38dd52.chunk.js": "/bmc_portal/bmc_portal/static/js/50.1e38dd52.chunk.js",
+    "static/js/82.daadf39d.chunk.js": "/bmc_portal/bmc_portal/static/js/82.daadf39d.chunk.js",
+    "static/js/125.d31bc259.chunk.js": "/bmc_portal/bmc_portal/static/js/125.d31bc259.chunk.js",
+    "static/css/701.de7f452f.chunk.css": "/bmc_portal/bmc_portal/static/css/701.de7f452f.chunk.css",
+    "static/js/701.ffd651f7.chunk.js": "/bmc_portal/bmc_portal/static/js/701.ffd651f7.chunk.js",
+    "static/js/963.22fed44e.chunk.js": "/bmc_portal/bmc_portal/static/js/963.22fed44e.chunk.js",
+    "index.html": "/bmc_portal/bmc_portal/index.html",
+    "main.f385714f.css.map": "/bmc_portal/bmc_portal/static/css/main.f385714f.css.map",
+    "main.b53c1f30.js.map": "/bmc_portal/bmc_portal/static/js/main.b53c1f30.js.map",
+    "128.22df0a75.chunk.js.map": "/bmc_portal/bmc_portal/static/js/128.22df0a75.chunk.js.map",
+    "908.746b4398.chunk.js.map": "/bmc_portal/bmc_portal/static/js/908.746b4398.chunk.js.map",
+    "880.1c21afdc.chunk.js.map": "/bmc_portal/bmc_portal/static/js/880.1c21afdc.chunk.js.map",
+    "323.20263103.chunk.js.map": "/bmc_portal/bmc_portal/static/js/323.20263103.chunk.js.map",
+    "898.e66dac28.chunk.js.map": "/bmc_portal/bmc_portal/static/js/898.e66dac28.chunk.js.map",
+    "282.ea1ef603.chunk.js.map": "/bmc_portal/bmc_portal/static/js/282.ea1ef603.chunk.js.map",
+    "50.1e38dd52.chunk.js.map": "/bmc_portal/bmc_portal/static/js/50.1e38dd52.chunk.js.map",
+    "82.daadf39d.chunk.js.map": "/bmc_portal/bmc_portal/static/js/82.daadf39d.chunk.js.map",
+    "125.d31bc259.chunk.js.map": "/bmc_portal/bmc_portal/static/js/125.d31bc259.chunk.js.map",
+    "701.de7f452f.chunk.css.map": "/bmc_portal/bmc_portal/static/css/701.de7f452f.chunk.css.map",
+    "701.ffd651f7.chunk.js.map": "/bmc_portal/bmc_portal/static/js/701.ffd651f7.chunk.js.map",
+    "963.22fed44e.chunk.js.map": "/bmc_portal/bmc_portal/static/js/963.22fed44e.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f385714f.css",
+    "static/js/main.b53c1f30.js"
+  ]
+}
