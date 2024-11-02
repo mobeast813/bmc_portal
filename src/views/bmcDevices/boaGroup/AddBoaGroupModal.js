@@ -1,7 +1,7 @@
 import { CCol, CForm, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CRow } from "@coreui/react";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-import InputTitleTemplate from "../../../components/templates/InputTitleTemplate";
+import InputTitleTemplate from "../../../components/text/InputTitleTemplate";
 import { registerBoaGroup } from "../../../apis/bmcDevice/BmcDeviceApi";
 import { Cookies } from "react-cookie";
 import ButtonPrimary from "../../../components/buttons/ButtonPrimary";

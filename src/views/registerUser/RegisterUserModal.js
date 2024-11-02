@@ -7,7 +7,7 @@ import ButtonPrimary from "../../components/buttons/ButtonPrimary";
 import ButtonSecondary from "../../components/buttons/ButtonSecondary";
 import { checkUserIdDuplication, getBoaList, registerUser } from "../../apis/user/UserApi";
 import { MultiSelect } from "react-multi-select-component";
-import InputTitleTemplate from "../../components/templates/InputTitleTemplate";
+import InputTitleTemplate from "../../components/text/InputTitleTemplate";
 
 
 const RegisterUserModal

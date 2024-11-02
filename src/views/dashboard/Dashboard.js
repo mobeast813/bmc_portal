@@ -9,6 +9,7 @@ import PowerSupply from "./contents/PowerSupply";
 import Vender from "./contents/Vendor";
 import Fan from "./contents/Fan";
 import Temperature from "./contents/Temperature";
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
 	const [cookies] = useCookies(["userId"]);
@@ -19,14 +20,14 @@ const Dashboard = () => {
 		<>
 			<CRow>
 				<div className="d-flex flex-wrap mb-4" style={{ padding: 0 }}>
-					<Vender userId={userId} />
-					<JoinUnjoin userId={userId} />
-					<BoaGroup userId={userId} />
-					<BmcPower userId={userId} />
-					<Temperature userId={userId} />
-					<PowerSupply userId={userId} />
-					<Voltage userId={userId} />
-					<Fan userId={userId} />
+					<Link to="/bmc-device/server"><Vender userId={userId} /></Link>
+					<Link to="/bmc-device/server"><JoinUnjoin userId={userId} /></Link>
+					<Link to="/bmc-device/server"><BoaGroup userId={userId} /></Link>
+					<Link to="/bmc-device/server"><BmcPower userId={userId} /></Link>
+					<Link to="/monitoring/all"><Temperature userId={userId} /></Link>
+					<Link to="/monitoring/all"><PowerSupply userId={userId} /></Link>
+					<Link to="/monitoring/all"><Voltage userId={userId} /></Link>
+					<Link to="/monitoring/all"><Fan userId={userId} /></Link>
 				</div>
 			</CRow >
 		</>

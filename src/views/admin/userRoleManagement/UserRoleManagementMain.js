@@ -1,20 +1,24 @@
 import React, { useState, useEffect } from "react";
-import { CCard, CCardBody, CCol, CRow, CCardTitle } from "@coreui/react";
+import { CCard, CCardBody, CCol, CRow, CCardTitle, CFormLabel, CFormInput } from "@coreui/react";
 import "react-datepicker/dist/react-datepicker.css";
-import { deleteBmcServer, getBmcServerList, getSearchedBmcServerList } from "../../../apis/bmcDevice/BmcDeviceApi";
-import { useCookies } from "react-cookie";
 import SelectBox from "../../../components/selectBox/SelectBox";
 import ButtonOutLine from "../../../components/buttons/ButtonOutline";
 import { SetSelectBoxOptions, SetSelectBoxPageOptions } from "../../../utils/Utilities";
-import BmcServerList from "./BmcServerList";
-import { useDispatch } from "react-redux";
-import AddBmcServerModal from "./AddBmcServerModal";
+import { useDispatch, useSelector } from "react-redux";
 import ButtonPrimary from "../../../components/buttons/ButtonPrimary";
+import UserRoleManagementList from "./UserRoleManagementList";
+import { deleteBmcAuthByUserId, getBmcListByUserId, getSearchedBmcListByUserId } from "../../../apis/user/AdminApi";
+import { useNavigate, useParams } from "react-router-dom";
+import ButtonSecondary from "../../../components/buttons/ButtonSecondary";
+import EditUserRoleModal from "./EditUserRoleModal";
 
-const BmcServerMain = () => {
-	const [cookies] = useCookies(["userId"]);
-	var userId = `${cookies.userId}`
+
+const UserRoleManagementMain = () => {
+	const { userId } = useParams();
+
+
 	const dispatch = useDispatch();
+	const navigate = useNavigate();
 
 	// 조회 관련 변수
 	const [selectedIds, setSelectedIds] = useState([]);
@@ -25,18 +29,16 @@ const BmcServerMain = () => {
 	const [selectBoxReload, setSelectBoxReload] = useState(false);
 
 	// selectBox Options
-	const [joinSelectBoxOption, setJoinSelectBoxOption] = useState(['join', 'unjoin']);
 	const [vendorSelectBoxOption, setVendorSelectBoxOption] = useState([]);
 	const [boaGroupSelectBoxOption, setBoaGroupSelectBoxOption] = useState([]);
-	const [selectedJoin, setSelectedJoin] = useState(0);
 	const [selectedVendor, setSelectedVendor] = useState(0);
 	const [selectedBoaGroup, setSelectedBoaGroup] = useState(0);
 
 	//그리스 셀렉션 초기화
 	const [resetCheckbox, setResetCheckbox] = useState(false);
 
-	//등록요청 팝업
-	const [addBmcVisible, setAddBmcVisible] = useState(false);
+	//권한 수정 팝업
+	const [roleModalVisible, setRoleModalVisible] = useState(false);
 
 	useEffect(() => {
 		initList(1);
@@ -44,11 +46,11 @@ const BmcServerMain = () => {
 
 	const initList = (page) => {
 		try {
-			return getBmcServerList({ userId: userId, page: page })
+			return getBmcListByUserId({ userId: userId, page: page })
 				.then((data) => {
 					setVendorSelectBoxOption(data.vendor)
-					setBoaGroupSelectBoxOption(data.boa)
-					setList(data.bmc)
+					setBoaGroupSelectBoxOption(data.boa_name)
+					setList(data.user_auth)
 					setTotalPage(data.pages)
 				}).catch((error) => {
 					console.log(error);
@@ -61,11 +63,11 @@ const BmcServerMain = () => {
 	//BMC서버 리스트 조회
 	const getList = ({ isRefresh, page }) => {
 		try {
-			return getBmcServerList({
+			return getBmcListByUserId({
 				userId: userId,
 				page: isRefresh ? 1 : page
 			}).then((data) => {
-				setList(data.bmc)
+				setList(data.user_auth)
 				if (isRefresh) {
 					setResetCheckbox(!resetCheckbox)
 					setSelectBoxReload(!selectBoxReload)
@@ -79,15 +81,15 @@ const BmcServerMain = () => {
 
 	//BMC서버 리스트 검색 조회
 	const getSearchedList = ({ isRefresh, page }) => {
+		console.log("getSearchedList")
 		try {
-			return getSearchedBmcServerList({
+			return getSearchedBmcListByUserId({
 				userId: userId,
-				join: selectedJoin,
 				vendor: selectedVendor,
-				boaName: selectedBoaGroup,
+				boa: selectedBoaGroup,
 				page: isRefresh ? 1 : page
 			}).then((data) => {
-				setList(data.bmc)
+				setList(data.user_auth)
 				if (isRefresh) {
 					setSelectBoxReload(!selectBoxReload)
 					setTotalPage(data.pages)
@@ -125,24 +127,22 @@ const BmcServerMain = () => {
 		setSelectedIds([]);
 	};
 
-	//등록요청 클릭
-	const onClickRegister = () => {
-		setAddBmcVisible(true)
-	};
-
-	//Bmc 서버 삭제 요청
+	const onClickEdit = () => {
+		setRoleModalVisible(true)
+	}
+	//Bmc서버권한 삭제 요청
 	const onClickDelete = async () => {
 		if (selectedIds.length > 0) {
 			dispatch({
 				type: "modal",
 				showConfirmModal: {
 					isShow: true,
-					title: "BMC서버 삭제 확인",
-					msg: `${selectedIds.length}개의 BMC 서버를 삭제하시겠습니까?`,
+					title: "BMC서버권한 삭제 확인",
+					msg: `${selectedIds.length}개의 BMC서버권한을 삭제하시겠습니까?`,
 					onConfirm: () => {
-						deleteBmcServer({ bmcUUID: selectedIds }).then((response) => {
+						deleteBmcAuthByUserId({ userId: userId, bmcUUID: selectedIds }).then((response) => {
 							if (response) {
-								dispatch({ type: "modal", showAlertModal: { isShow: true, title: "삭제 완료", msg: "BMC서버 삭제를 완료하였습니다." } });
+								dispatch({ type: "modal", showAlertModal: { isShow: true, title: "삭제 완료", msg: "BMC서버권한을 삭제하였습니다." } });
 								reloadData()
 							} else {
 								dispatch({ type: "modal", showAlertModal: { isShow: true, title: "⚠️ 알림", msg: "삭제에 실패하였습니다." } });
@@ -156,8 +156,8 @@ const BmcServerMain = () => {
 				type: "modal",
 				showAlertModal: {
 					isShow: true,
-					title: "BMC서버 삭제 확인",
-					msg: "삭제할 서버를 선택해 주세요"
+					title: "BMC서버 권한삭제 확인",
+					msg: "권한을 삭제할 서버를 선택해 주세요"
 				}
 			});
 		}
@@ -168,39 +168,58 @@ const BmcServerMain = () => {
 			<CRow className="d-flex justify-content-center align-item-center">
 				<CCard className="d-flex mb-3">
 					<CCardBody>
-						<div className="d-flex">
-							<CCardTitle style={{ fontWeight: "bold" }}>BMC 서버 관리</CCardTitle>
-							{/* {list && <CCardText>(총 {totalCount}건)</CCardText>} */}
-						</div>
-						<CRow className="justify-content-end mb-4" xs={{ cols: 'auto' }}>
-							<SelectBox
-								options={SetSelectBoxOptions(joinSelectBoxOption, "전체")}
-								callBack={(value) => {
-									setSelectedJoin(value)
-								}} />
-							<SelectBox
-								options={SetSelectBoxOptions(vendorSelectBoxOption, "전체")}
-								callBack={(value) => setSelectedVendor(value)} />
-							<SelectBox
-								options={SetSelectBoxOptions(boaGroupSelectBoxOption, "전체")}
-								callBack={(value) => setSelectedBoaGroup(value)} />
-							<CCol>
-								<ButtonPrimary
-									text="검색"
-									onClick={async () => {
-										if (selectedJoin === 0 && selectedVendor === 0 && selectedBoaGroup === 0) {
-											getList({ isRefresh: true, page: 1 });
-										} else {
-											getSearchedList({ isRefresh: true, page: 1 });
-										}
-
-									}} />
-							</CCol>
+						<CRow className="align-item-center justify-content-start mb-4" xs={{ cols: 'auto' }}>
+							<CCol><ButtonSecondary text="뒤로" onClick={() => navigate('/admin/manage-user')} /></CCol>
 						</CRow>
-						<CRow>
+						<div className="d-flex align-item-center mb-3">
+							<CCardTitle style={{ fontWeight: "bold" }}>사용자 권한 관리</CCardTitle>
+						</div>
+						<hr
+							style={{
+								color: "white",
+								height: 10,
+								marginTop: 3,
+
+							}}
+						/>
+						<CRow className="d-flex align-item-center justify-content-between mb-4" xs={{ cols: 'auto' }}>
+							<CRow className="justify-content-end mb-4" xs={{ cols: 'auto' }}>
+								<CCol className="d-flex">
+									<CFormLabel className="col-form-label me-2 col-3">
+										User ID
+									</CFormLabel>
+									<CFormInput type="text" id="User ID" value={userId} readOnly={true} />
+								</CCol>
+								<CCol>
+									<ButtonPrimary text="권한수정" onClick={onClickEdit} />
+								</CCol>
+
+							</CRow>
+
+							<CRow className="justify-content-end mb-4" xs={{ cols: 'auto' }}>
+								<SelectBox
+									options={SetSelectBoxOptions(vendorSelectBoxOption, "전체")}
+									callBack={(value) => setSelectedVendor(value)} />
+								<SelectBox
+									options={SetSelectBoxOptions(boaGroupSelectBoxOption, "전체")}
+									callBack={(value) => setSelectedBoaGroup(value)} />
+								<CCol>
+									<ButtonPrimary
+										text="검색"
+										onClick={async () => {
+											if (selectedVendor === 0 && selectedBoaGroup === 0) {
+												getList({ isRefresh: true, page: 1 });
+											} else {
+												getSearchedList({ isRefresh: true, page: 1 });
+											}
+
+										}} />
+								</CCol>
+							</CRow>
+						</CRow>
+						<CRow className="">
 							<CCol className="d-flex justify-content-between">
 								<div className="d-flex">
-									<ButtonOutLine text="등록요청" onClick={onClickRegister} />
 									<ButtonOutLine text="삭제" onClick={onClickDelete} />
 								</div>
 								<div className="d-flex">
@@ -208,7 +227,7 @@ const BmcServerMain = () => {
 										options={SetSelectBoxPageOptions(totalPage)}
 										reload={selectBoxReload}
 										callBack={(pageValue) => {
-											if (selectedJoin === 0 && selectedVendor === 0 && selectedBoaGroup === 0) {
+											if (selectedVendor === 0 && selectedBoaGroup === 0) {
 												getList({ isRefresh: false, page: pageValue });
 											} else {
 												getSearchedList({ isRefresh: false, page: pageValue })
@@ -218,7 +237,7 @@ const BmcServerMain = () => {
 							</CCol>
 						</CRow>
 					</CCardBody>
-					<BmcServerList
+					<UserRoleManagementList
 						list={list}
 						selectId={selectId}
 						unselectId={unselectId}
@@ -226,11 +245,12 @@ const BmcServerMain = () => {
 						unselectAll={unselectAll}
 						resetCheckbox={resetCheckbox}
 					/>
-					<AddBmcServerModal
-						visible={addBmcVisible}
-						setVisible={setAddBmcVisible}
+					<EditUserRoleModal
+						visible={roleModalVisible}
+						setVisible={setRoleModalVisible}
 						vendorOptions={vendorSelectBoxOption}
 						boaGroupOptions={boaGroupSelectBoxOption}
+						userId={userId}
 						callBack={reloadData}
 					/>
 				</CCard>
@@ -239,4 +259,4 @@ const BmcServerMain = () => {
 	);
 };
 
-export default BmcServerMain;
+export default UserRoleManagementMain;

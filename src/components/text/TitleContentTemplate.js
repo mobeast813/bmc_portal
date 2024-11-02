@@ -1,10 +1,11 @@
 import { CCol, CFormInput, CFormLabel } from "@coreui/react"
 
 const TitleContentTemplate = (props) => {
-	const { title, value } = props
+	const { title, value, col } = props
+	const classString = `col-form-label  me-2 col-${col ? col : "3"}`
 	return (
 		<CCol sm={6} className="d-flex align-items-center">
-			<CFormLabel className="col-form-label col-3 me-2">
+			<CFormLabel className={classString}>
 				{title}
 			</CFormLabel>
 			<CFormInput
@@ -12,6 +13,7 @@ const TitleContentTemplate = (props) => {
 				id={title}
 				value={value}
 				readOnly={true}
+				disabled={true}
 			/>
 		</CCol>
 	)

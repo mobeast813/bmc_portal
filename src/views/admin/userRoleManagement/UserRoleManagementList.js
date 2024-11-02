@@ -9,9 +9,8 @@ import {
 	CTableHeaderCell,
 	CTableRow,
 } from "@coreui/react";
-import InventoryCatalogDetailModal from "../../maintenance/InventoryCatalogDetailModal";
 
-const BmcServerList = ({
+const UserRoleManagementList = ({
 	list,
 	selectId,
 	unselectId,
@@ -67,14 +66,12 @@ const BmcServerList = ({
 		if (list) {
 			const transformedData = list.map((item) => ({
 				check: "",
+				userId: item.user_id,
 				bmcUUID: item.bmc_UUID,
-				bmcName: item.bmc_name,
 				boaName: item.boa_name,
+				userName: item.user_name,
 				vendor: item.vendor,
-				bmcIp: item.bmc_ip,
-				version: item.version,
-				joinState: item.join_state,
-				joinDate: item.join_date,
+				createdDate: item.created_date,
 				_cellProps: { class: { scope: "row" } },
 			}));
 			setItems(transformedData);
@@ -85,14 +82,13 @@ const BmcServerList = ({
 
 	const columns = [
 		{ key: "check", label: "선택", _props: { scope: "col" } },
+		{ key: "user_id", label: "User ID", _props: { scope: "col" } },
+		// { key: "user_name", label: "사용자이름", _props: { scope: "col" } },
 		{ key: "bmc_UUID", label: "서버ID", _props: { scope: "col" } },
-		{ key: "bmc_name", label: "서버명", _props: { scope: "col" } },
+		// { key: "bmc_name", label: "서버명", _props: { scope: "col" } },
 		{ key: "boa_name", label: "그룹", _props: { scope: "col" } },
 		{ key: "vendor", label: "벤더", _props: { scope: "col" } },
-		{ key: "bmc_ip", label: "IP", _props: { scope: "col" } },
-		{ key: "version", label: "버전", _props: { scope: "col" } },
-		{ key: "join_state", label: "등록상태", _props: { scope: "col" } },
-		{ key: "join_date", label: "등록일", _props: { scope: "col" } },
+		{ key: "created_date", label: "등록일", _props: { scope: "col" } },
 	];
 
 	return (
@@ -149,29 +145,19 @@ const BmcServerList = ({
 									}}
 								/>
 							</CTableDataCell>
-							<CTableDataCell>
-								<Link onClick={() => showDetailPopup(item.bmcUUID)}>
-									{item.bmcUUID}
-								</Link>
-							</CTableDataCell>
-							<CTableDataCell>{item.bmcName}</CTableDataCell>
+							<CTableDataCell>{item.userId}</CTableDataCell>
+							{/* <CTableDataCell>{item.userName}</CTableDataCell> */}
+							<CTableDataCell>{item.bmcUUID}</CTableDataCell>
+							{/* <CTableDataCell>{item.bmcName}</CTableDataCell> */}
 							<CTableDataCell>{item.boaName}</CTableDataCell>
 							<CTableDataCell>{item.vendor}</CTableDataCell>
-							<CTableDataCell>{item.bmcIp}</CTableDataCell>
-							<CTableDataCell>{item.version}</CTableDataCell>
-							<CTableDataCell>{item.joinState}</CTableDataCell>
-							<CTableDataCell>{item.joinDate}</CTableDataCell>
+							<CTableDataCell>{item.createdDate}</CTableDataCell>
 						</CTableRow>
 					))}
 				</CTableBody>
 			</CTable>
-			<InventoryCatalogDetailModal
-				visible={visible}
-				setVisible={setVisible}
-				bmcUUID={selectedItem}
-			/>
 		</>
 	);
 };
 
-export default BmcServerList;
+export default UserRoleManagementList;

@@ -5,6 +5,7 @@ import { Cookies } from "react-cookie";
 
 // routes config
 import routes from "../routes";
+import UserRoleManagementMain from "../views/admin/userRoleManagement/UserRoleManagementMain";
 
 const AppContent = () => {
 	// 쿠키에서 특정 이름의 쿠키 값을 가져오는 함수
@@ -28,6 +29,7 @@ const AppContent = () => {
 		<CContainer className="px-4" lg style={{ maxWidth: "100%" }}>
 			<Suspense fallback={<CSpinner color="primary" />}>
 				<Routes>
+					{/* <Route path="/admin/manage-user-role/:id" element={<UserRoleManagementMain />} /> */}
 					{routes.map((route, idx) => {
 						return (
 							route.element && (

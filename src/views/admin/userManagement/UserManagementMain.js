@@ -1,49 +1,41 @@
 import React, { useState, useEffect } from "react";
 import { CCard, CCardBody, CCol, CRow, CCardTitle } from "@coreui/react";
 import "react-datepicker/dist/react-datepicker.css";
-import { deleteBoaGroup, getBoaGroupList } from "../../../apis/bmcDevice/BmcDeviceApi";
 import { useCookies } from "react-cookie";
 import SelectBox from "../../../components/selectBox/SelectBox";
 import ButtonOutLine from "../../../components/buttons/ButtonOutline";
-import { SetSelectBoxPageOptions } from "../../../utils/Utilities";
+import { SetSelectBoxOptions, SetSelectBoxPageOptions } from "../../../utils/Utilities";
 import { useDispatch } from "react-redux";
 import ButtonPrimary from "../../../components/buttons/ButtonPrimary";
-import AddBoaGroupModal from "./AddBoaGroupModal";
-import BoaGroupList from "./BoaGroupList";
+import { deleteUser, getSearchedUserList, getUserList } from "../../../apis/user/AdminApi";
+import UserManagementList from "./UserManagementList";
+import InputTextTempate from "../../../components/text/InputTextTemplete";
 
-const BoaGroupMain = () => {
-	const [cookies] = useCookies(["userId"]);
-	var userId = `${cookies.userId}`
+const UserManagementMain = () => {
 	const dispatch = useDispatch();
 
 	// 조회 관련 변수
 	const [selectedIds, setSelectedIds] = useState([]);
 	const [list, setList] = useState();
 	const [totalPage, setTotalPage] = useState();
+	const [searchedUserName, setSearchedUserName] = useState("");
 
-	// 페이지네이션
+	// 패이지네이션
 	const [selectBoxReload, setSelectBoxReload] = useState(false);
 
-	//그리스 셀렉션 초기화
+	//그리드 셀렉션 초기화
 	const [resetCheckbox, setResetCheckbox] = useState(false);
 
-	//등록요청 팝업
-	const [addBoaVisible, setAddBoaVisible] = useState(false);
-
 	useEffect(() => {
-		getList({ isRefresh: true, page: 1 });
+		initList(1);
 	}, []);
 
-	const getList = ({ isRefresh, page }) => {
-
+	const initList = (page) => {
 		try {
-			return getBoaGroupList({ userId: userId, page: page })
+			return getUserList({ page: page })
 				.then((data) => {
-					setList(data.boa)
-					if (isRefresh) {
-						setTotalPage(data.pages)
-						setSelectBoxReload(!selectBoxReload)
-					}
+					setList(data.users)
+					setTotalPage(data.pages)
 				}).catch((error) => {
 					console.log(error);
 				});
@@ -52,10 +44,47 @@ const BoaGroupMain = () => {
 		}
 	}
 
+	// 사용자 리스트 조회
+	const getList = ({ isRefresh, page }) => {
+		try {
+			return getUserList({
+				page: isRefresh ? 1 : page
+			}).then((data) => {
+				setList(data.users)
+				if (isRefresh) {
+					setResetCheckbox(!resetCheckbox)
+					setSelectBoxReload(!selectBoxReload)
+					setTotalPage(data.pages)
+				}
+			});
+		} catch (error) {
+			console.error("Error fetching data:", error);
+		}
+	};
+
+	// 사용자 리스트 검색 조회
+	const getSearchedList = ({ isRefresh, page }) => {
+		try {
+			return getSearchedUserList({
+				userName: searchedUserName,
+				page: isRefresh ? 1 : page
+			}).then((data) => {
+				setList(data.users)
+				if (isRefresh) {
+					setSelectBoxReload(!selectBoxReload)
+					setTotalPage(data.pages)
+				}
+			});
+		} catch (error) {
+			console.error("Error fetching data:", error);
+		}
+	};
+
 	// 초기화
 	const reloadData = async () => {
 		try {
 			setResetCheckbox(!resetCheckbox)
+			getSearchedList({ isRefresh: true, page: 1 });
 		} catch (error) {
 			console.error("Error fetching data:", error);
 		}
@@ -78,24 +107,19 @@ const BoaGroupMain = () => {
 		setSelectedIds([]);
 	};
 
-	//등록요청 클릭
-	const onClickRegister = () => {
-		setAddBoaVisible(true)
-	};
-
-	//BOA그룹 삭제 요청
+	//사용자 삭제 요청
 	const onClickDelete = async () => {
 		if (selectedIds.length > 0) {
 			dispatch({
 				type: "modal",
 				showConfirmModal: {
 					isShow: true,
-					title: "BOA그룹 삭제 확인",
-					msg: `${selectedIds.length}개의 BOA 그룹을 삭제하시겠습니까?`,
+					title: "사용자 삭제 확인",
+					msg: `${selectedIds.length}명의 사용자를 삭제하시겠습니까?`,
 					onConfirm: () => {
-						deleteBoaGroup({ boaId: selectedIds }).then((response) => {
+						deleteUser({ userId: selectedIds }).then((response) => {
 							if (response) {
-								dispatch({ type: "modal", showAlertModal: { isShow: true, title: "삭제 완료", msg: "BOA그룹 삭제를 완료하였습니다." } });
+								dispatch({ type: "modal", showAlertModal: { isShow: true, title: "삭제 완료", msg: "사용자를 삭제하였습니다." } });
 								reloadData()
 							} else {
 								dispatch({ type: "modal", showAlertModal: { isShow: true, title: "⚠️ 알림", msg: "삭제에 실패하였습니다." } });
@@ -109,8 +133,8 @@ const BoaGroupMain = () => {
 				type: "modal",
 				showAlertModal: {
 					isShow: true,
-					title: "BOA그룹 삭제 확인",
-					msg: "삭제할 서버를 선택해 주세요"
+					title: "사용자 삭제 확인",
+					msg: "삭제할 사용자를 선택해 주세요"
 				}
 			});
 		}
@@ -122,22 +146,27 @@ const BoaGroupMain = () => {
 				<CCard className="d-flex mb-3">
 					<CCardBody>
 						<div className="d-flex">
-							<CCardTitle style={{ fontWeight: "bold" }}>BOA 그룹 관리</CCardTitle>
-							{/* {list && <CCardText>(총 {totalCount}건)</CCardText>} */}
+							<CCardTitle style={{ fontWeight: "bold" }}>사용자 관리</CCardTitle>
 						</div>
 						<CRow className="justify-content-end mb-4" xs={{ cols: 'auto' }}>
+							<InputTextTempate title="Searched User Name"
+								setOnChange={setSearchedUserName}
+								placeholder="성명" />
 							<CCol>
 								<ButtonPrimary
 									text="검색"
 									onClick={async () => {
-										getList({ isRefresh: true, page: 1 });
+										if (searchedUserName.length > 0) {
+											getSearchedList({ isRefresh: false, page: 1 })
+										} else {
+											getList({ isRefresh: false, page: 1 });
+										}
 									}} />
 							</CCol>
 						</CRow>
 						<CRow>
 							<CCol className="d-flex justify-content-between">
 								<div className="d-flex">
-									<ButtonOutLine text="등록" onClick={onClickRegister} />
 									<ButtonOutLine text="삭제" onClick={onClickDelete} />
 								</div>
 								<div className="d-flex">
@@ -145,13 +174,17 @@ const BoaGroupMain = () => {
 										options={SetSelectBoxPageOptions(totalPage)}
 										reload={selectBoxReload}
 										callBack={(pageValue) => {
-											getList({ isRefresh: false, page: pageValue });
+											if (searchedUserName.length > 0) {
+												getSearchedList({ isRefresh: false, page: pageValue })
+											} else {
+												getList({ isRefresh: false, page: pageValue });
+											}
 										}} />
 								</div>
 							</CCol>
 						</CRow>
 					</CCardBody>
-					<BoaGroupList
+					<UserManagementList
 						list={list}
 						selectId={selectId}
 						unselectId={unselectId}
@@ -159,15 +192,10 @@ const BoaGroupMain = () => {
 						unselectAll={unselectAll}
 						resetCheckbox={resetCheckbox}
 					/>
-					<AddBoaGroupModal
-						visible={addBoaVisible}
-						setVisible={setAddBoaVisible}
-						callBack={reloadData}
-					/>
 				</CCard>
 			</CRow>
 		</>
 	);
 };
 
-export default BoaGroupMain;
+export default UserManagementMain;

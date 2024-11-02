@@ -6,6 +6,7 @@ const initialState = {
 	loggedInUserTabs: [],
 	showAlertModal: { isShow: false, title: "", msg: "" },
 	showConfirmModal: { isShow: false, title: "", msg: "", onConfirm: () => { } },
+	selectedUserInfo: { userId: "", name: "", email: "" },
 };
 
 const changeState = (state = initialState, { type, ...action }) => {
@@ -14,6 +15,9 @@ const changeState = (state = initialState, { type, ...action }) => {
 			var result = { ...state, ...action }
 			return result;
 		case "modal":
+			var result = { ...state, ...action }
+			return result;
+		case "user":
 			var result = { ...state, ...action }
 			return result;
 		default:

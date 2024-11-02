@@ -1,6 +1,6 @@
 import { CCol, CForm, CFormInput, CFormLabel, CModal, CModalBody, CModalHeader, CModalTitle, CRow } from "@coreui/react";
 import { useEffect, useState } from "react";
-import TitleContentTemplate from "../../components/templates/TitleContentTemplate";
+import TitleContentTemplate from "../../components/text/TitleContentTemplate";
 import { getBmcInventoryCatalogDetail } from "../../apis/maintenance/Maintenance";
 import { useDispatch } from "react-redux";
 

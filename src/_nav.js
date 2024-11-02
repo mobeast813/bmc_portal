@@ -95,12 +95,12 @@ const _nav = [
 				id: 10,
 				to: "/admin/manage-user",
 			},
-			{
-				component: CNavItem,
-				name: "사용자 권한 관리",
-				id: 11,
-				to: "/admin/manage-user-role",
-			},
+			// {
+			// 	component: CNavItem,
+			// 	name: "사용자 권한 관리",
+			// 	id: 11,
+			// 	to: "/admin/manage-user-role",
+			// },
 		],
 	},
 ];

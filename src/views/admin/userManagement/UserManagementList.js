@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
 	CFormCheck,
 	CTable,
@@ -9,9 +9,10 @@ import {
 	CTableHeaderCell,
 	CTableRow,
 } from "@coreui/react";
-import InventoryCatalogDetailModal from "../../maintenance/InventoryCatalogDetailModal";
+import { useDispatch } from "react-redux";
 
-const BmcServerList = ({
+
+const UserManagementList = ({
 	list,
 	selectId,
 	unselectId,
@@ -19,10 +20,12 @@ const BmcServerList = ({
 	unselectAll,
 	resetCheckbox,
 }) => {
+	const dispatch = useDispatch();
+	const navigate = useNavigate();
+
 	const [items, setItems] = useState();
 	const [headCheckStates, setHeadCheckStates] = useState(false);
 	const [checkboxStates, setCheckboxStates] = useState({});
-	const [visible, setVisible] = useState(false);
 	const [selectedItem, setSelectedItem] = useState();
 
 	const handleCheckboxChange = (id, isChecked) => {
@@ -36,15 +39,14 @@ const BmcServerList = ({
 		setHeadCheckStates(false)
 		if (items) {
 			items.forEach((item) => {
-				checkboxStates[item.bmcUUID] = false;
+				checkboxStates[item.userId] = false;
 			});
 		}
 		unselectAll();
 	}, [resetCheckbox])
 
-	const showDetailPopup = (bmcUUID) => {
-		setSelectedItem(bmcUUID)
-		setVisible(true);
+	const showDetailPopup = (userId) => {
+		setSelectedItem(userId)
 	}
 
 
@@ -67,32 +69,29 @@ const BmcServerList = ({
 		if (list) {
 			const transformedData = list.map((item) => ({
 				check: "",
-				bmcUUID: item.bmc_UUID,
-				bmcName: item.bmc_name,
-				boaName: item.boa_name,
-				vendor: item.vendor,
-				bmcIp: item.bmc_ip,
-				version: item.version,
-				joinState: item.join_state,
-				joinDate: item.join_date,
+				createdDate: item.created_date,
+				userEmail: item.user_email,
+				userId: item.user_id,
+				userName: item.user_name,
 				_cellProps: { class: { scope: "row" } },
 			}));
 			setItems(transformedData);
 		}
 	}, [list]);
 
-
+	const setStoreSelectedRoleUserInfo = ({ userId, name, email }) => {
+		dispatch({
+			type: "user",
+			selectedUserInfo: { userId: userId, name: name, email: email }
+		});
+	}
 
 	const columns = [
 		{ key: "check", label: "선택", _props: { scope: "col" } },
-		{ key: "bmc_UUID", label: "서버ID", _props: { scope: "col" } },
-		{ key: "bmc_name", label: "서버명", _props: { scope: "col" } },
-		{ key: "boa_name", label: "그룹", _props: { scope: "col" } },
-		{ key: "vendor", label: "벤더", _props: { scope: "col" } },
-		{ key: "bmc_ip", label: "IP", _props: { scope: "col" } },
-		{ key: "version", label: "버전", _props: { scope: "col" } },
-		{ key: "join_state", label: "등록상태", _props: { scope: "col" } },
-		{ key: "join_date", label: "등록일", _props: { scope: "col" } },
+		{ key: "user_id", label: "사용자ID", _props: { scope: "col" } },
+		{ key: "user_name", label: "성명", _props: { scope: "col" } },
+		{ key: "user_email", label: "이메일 주소", _props: { scope: "col" } },
+		{ key: "create_dated", label: "등록일", _props: { scope: "col" } },
 	];
 
 	return (
@@ -110,12 +109,12 @@ const BmcServerList = ({
 											setHeadCheckStates(isChecked);
 											if (isChecked) {
 												items.forEach((item) => {
-													checkboxStates[item.bmcUUID] = true;
+													checkboxStates[item.userId] = true;
 												});
 												selectAll();
 											} else {
 												items.forEach((item) => {
-													checkboxStates[item.bmcUUID] = false;
+													checkboxStates[item.userId] = false;
 												});
 												unselectAll();
 											}
@@ -136,42 +135,33 @@ const BmcServerList = ({
 							<CTableDataCell>
 								<CFormCheck
 									type="checkbox"
-									id={`gridCheck-${item.bmcUUID}`}
-									checked={checkboxStates[item.bmcUUID] || false}
+									id={`gridCheck-${item.userId}`}
+									checked={checkboxStates[item.userId] || false}
 									onChange={(e) => {
 										const isChecked = e.target.checked;
-										handleCheckboxChange(item.bmcUUID, isChecked);
+										handleCheckboxChange(item.userId, isChecked);
 										if (isChecked) {
-											selectId(item.bmcUUID);
+											selectId(item.userId);
 										} else {
-											unselectId(item.bmcUUID);
+											unselectId(item.userId);
 										}
 									}}
 								/>
 							</CTableDataCell>
 							<CTableDataCell>
-								<Link onClick={() => showDetailPopup(item.bmcUUID)}>
-									{item.bmcUUID}
+								<Link to={`/admin/manage-user-role/${item.userId}`} onClick={() => setStoreSelectedRoleUserInfo({ userId: item.userId, name: item.userName, email: item.userEmail })}>
+									{item.userId}
 								</Link>
 							</CTableDataCell>
-							<CTableDataCell>{item.bmcName}</CTableDataCell>
-							<CTableDataCell>{item.boaName}</CTableDataCell>
-							<CTableDataCell>{item.vendor}</CTableDataCell>
-							<CTableDataCell>{item.bmcIp}</CTableDataCell>
-							<CTableDataCell>{item.version}</CTableDataCell>
-							<CTableDataCell>{item.joinState}</CTableDataCell>
-							<CTableDataCell>{item.joinDate}</CTableDataCell>
+							<CTableDataCell>{item.userName}</CTableDataCell>
+							<CTableDataCell>{item.userEmail}</CTableDataCell>
+							<CTableDataCell>{item.createdDate}</CTableDataCell>
 						</CTableRow>
 					))}
 				</CTableBody>
-			</CTable>
-			<InventoryCatalogDetailModal
-				visible={visible}
-				setVisible={setVisible}
-				bmcUUID={selectedItem}
-			/>
+			</CTable >
 		</>
 	);
 };
 
-export default BmcServerList;
+export default UserManagementList;

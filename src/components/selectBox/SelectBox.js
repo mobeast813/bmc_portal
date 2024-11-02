@@ -2,16 +2,17 @@ import { CCol, CFormSelect } from "@coreui/react";
 import { useEffect, useState } from "react";
 
 const SelectBox = (props) => {
-	const { options, callBack, reload } = props
-	const [status, setStatus] = useState();
-
+	const { options, callBack, reload, initValue } = props
+	const [status, setStatus] = useState(initValue ? initValue : "");
 	useEffect(() => {
-		setStatus(1)
+		if (reload) {
+			setStatus(1)
+		}
 	}, [reload]);
 
 	return <CCol className="d-flex align-items-center ps-0">
 		<CFormSelect
-			className="d-flex "
+			className="d-flex"
 			value={status}
 			onChange={(e) => {
 				setStatus(e.target.value);
