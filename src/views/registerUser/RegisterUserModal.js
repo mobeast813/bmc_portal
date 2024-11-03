@@ -35,17 +35,20 @@ const RegisterUserModal
 		}, [userName, email, isSamePassword, isUniqueId, selectedBoaItems])
 
 		useEffect(() => {
-			getBoaList()
-				.then(async (response) => {
-					if (response.boa.length > 0) {
-						setBoaGroupSelectBoxOption(response.boa)
-					} else {
-						dispatch({ type: "modal", showAlertModal: { isShow: true, title: "⚠️ 알림", msg: "BOA그룹정보가 없습니다." } });
-					}
-				}).catch((error) => {
-					dispatch({ type: "modal", showAlertModal: { isShow: true, title: "⚠️ 에러", msg: "BOA그룹정보를 가져올 수 없습니다." } });
-				})
-		}, [])
+			if (visible) {
+				getBoaList()
+					.then(async (response) => {
+						if (response.boa.length > 0) {
+							setBoaGroupSelectBoxOption(response.boa)
+						} else {
+							dispatch({ type: "modal", showAlertModal: { isShow: true, title: "⚠️ 알림", msg: "BOA그룹정보가 없습니다." } });
+						}
+					}).catch((error) => {
+						dispatch({ type: "modal", showAlertModal: { isShow: true, title: "⚠️ 에러", msg: "BOA그룹정보를 가져올 수 없습니다." } });
+					})
+			}
+
+		}, [visible])
 
 		useEffect(() => {
 			setIsUniqueId(false)

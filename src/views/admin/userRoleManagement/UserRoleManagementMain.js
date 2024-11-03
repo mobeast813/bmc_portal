@@ -140,7 +140,7 @@ const UserRoleManagementMain = () => {
 					title: "BMC서버권한 삭제 확인",
 					msg: `${selectedIds.length}개의 BMC서버권한을 삭제하시겠습니까?`,
 					onConfirm: () => {
-						deleteBmcAuthByUserId({ userId: userId, bmcUUID: selectedIds }).then((response) => {
+						deleteBmcAuthByUserId({ userId: userId, bmcUUIDs: selectedIds }).then((response) => {
 							if (response) {
 								dispatch({ type: "modal", showAlertModal: { isShow: true, title: "삭제 완료", msg: "BMC서버권한을 삭제하였습니다." } });
 								reloadData()

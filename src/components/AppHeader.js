@@ -30,7 +30,8 @@ import { AppHeaderDropdown } from "./header/index";
 
 const AppHeader = () => {
 	const headerRef = useRef();
-	const { colorMode, setColorMode } = useColorModes("light");
+	const storedTheme = useSelector((state) => state.theme);
+	const { colorMode, setColorMode } = useColorModes(storedTheme);
 
 	const dispatch = useDispatch();
 	const sidebarShow = useSelector((state) => state.sidebarShow);
@@ -44,6 +45,14 @@ const AppHeader = () => {
 				);
 		});
 	}, []);
+
+	const setColors = (selectedColorMode) => {
+		setColorMode(selectedColorMode)
+		dispatch({
+			type: "set",
+			theme: selectedColorMode
+		});
+	}
 
 	return (
 		<CHeader position="sticky" className="mb-4 p-0" ref={headerRef}>
@@ -104,7 +113,7 @@ const AppHeader = () => {
 								className="d-flex align-items-center"
 								as="button"
 								type="button"
-								onClick={() => setColorMode("light")}
+								onClick={() => setColors("light")}
 							>
 								<CIcon className="me-2" icon={cilSun} size="lg" /> Light
 							</CDropdownItem>
@@ -113,7 +122,7 @@ const AppHeader = () => {
 								className="d-flex align-items-center"
 								as="button"
 								type="button"
-								onClick={() => setColorMode("dark")}
+								onClick={() => setColors("dark")}
 							>
 								<CIcon className="me-2" icon={cilMoon} size="lg" /> Dark
 							</CDropdownItem>
@@ -122,7 +131,7 @@ const AppHeader = () => {
 								className="d-flex align-items-center"
 								as="button"
 								type="button"
-								onClick={() => setColorMode("auto")}
+								onClick={() => setColors("auto")}
 							>
 								<CIcon className="me-2" icon={cilContrast} size="lg" /> Auto
 							</CDropdownItem>

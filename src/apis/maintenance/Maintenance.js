@@ -6,7 +6,7 @@ import api, { apiHeader } from "../Instance";
 export const getBmcInventoryCatalogList = async (props) => {
 	const { userId, page } = props
 	try {
-		const response = await api.get(`/bmc/inventory/${userId}/${page}`, {
+		const response = await api.get(`/api/bmc/inventory/${userId}/${page}`, {
 			headers: apiHeader(),
 		});
 		// {
@@ -58,7 +58,7 @@ export const getBmcInventoryCatalogList = async (props) => {
 export const getSearchedBmcInventoryCatalogList = async (props) => {
 	const { userId, vendor, boa, page } = props
 	try {
-		const response = await api.get(`/bmc/inventory/${userId}/${vendor}/${boa}/${page}`, {
+		const response = await api.get(`/api/bmc/inventory/${userId}/${vendor}/${boa}/${page}`, {
 			headers: apiHeader(),
 		});
 		// {
@@ -110,7 +110,7 @@ export const getSearchedBmcInventoryCatalogList = async (props) => {
 export const getBmcInventoryCatalogDetail = async (props) => {
 	const { bmcUUID } = props
 	try {
-		const response = await api.get(`/bmc/inventory/detail/${bmcUUID}`, {
+		const response = await api.get(`/api/bmc/inventory/detail/${bmcUUID}`, {
 			headers: apiHeader(),
 		});
 		return response.data;
@@ -118,6 +118,41 @@ export const getBmcInventoryCatalogDetail = async (props) => {
 		console.error("Error fetching data:", error);
 	}
 };
+
+
+///Power 현재상태 조회
+export const getPowerCurrentStatus = async (props) => {
+	const { bmcUUID } = props
+	try {
+		const bodyParams = {
+			"bmc_UUID": bmcUUID
+		}
+		const response = await api.post(`/api/bmc/power/status`, bodyParams, {
+			headers: apiHeader(),
+		});
+		return response.data;
+	} catch (error) {
+		console.error("Error fetching data:", error);
+	}
+}
+
+///Fan 현재상태 조회
+export const getFanCurrentStatus = async (props) => {
+	const { bmcUUID } = props
+	try {
+		const bodyParams = {
+			"bmc_UUID": bmcUUID
+		}
+		const response = await api.post(`/api/bmc/fan/status`, bodyParams, {
+			headers: apiHeader(),
+		});
+		return response.data;
+	} catch (error) {
+		console.error("Error fetching data:", error);
+	}
+}
+
+
 
 ///Power Control set 적용
 export const updatePowerControlSet = async (props) => {
@@ -130,16 +165,13 @@ export const updatePowerControlSet = async (props) => {
 		// 4 : Power Cycle Server
 		const bodyParams = {
 			"power_option": powerOption,
-			"bmc_UUID": bmcUUID,
-			"bmc_ip": bmcIp
+			"bmc_UUID": bmcUUID
 		}
-		// const response = await api.post(`/bmc/power/set`, {
-		// 	bodyParams,
-		// 	headers: apiHeader(),
-		// });
-		// return response.status === 200;
-		console.log(bodyParams);
-		return true;
+		const response = await api.post(`/api/bmc/power/set`,
+			bodyParams,
+			{ headers: apiHeader() }
+		);
+		return response.status === 200;
 	} catch (error) {
 		console.error("Error fetching data:", error);
 	}
@@ -147,7 +179,7 @@ export const updatePowerControlSet = async (props) => {
 
 ///Power Control set 적용
 export const updateFanControlSet = async (props) => {
-	const { fanOption, bmcUUID, bmcIp } = props
+	const { fanOption, bmcUUID } = props
 	try {
 		// 0 : Set Fan to Standard Speed
 		// 1 : Set Fan to Full Speed
@@ -156,15 +188,12 @@ export const updateFanControlSet = async (props) => {
 		const bodyParams = {
 			"fan_option": fanOption,
 			"bmc_UUID": bmcUUID,
-			"bmc_ip": bmcIp
 		}
-		// const response = await api.post(`/bmc/fan/set`, {
-		// 	bodyParams,
-		// 	headers: apiHeader(),
-		// });
-		// return response.status === 200;
-		console.log(bodyParams);
-		return true;
+		const response = await api.post(`/api/bmc/fan/set`,
+			bodyParams,
+			{ headers: apiHeader() }
+		);
+		return response.status === 200;
 	} catch (error) {
 		console.error("Error fetching data:", error);
 	}

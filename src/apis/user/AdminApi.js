@@ -4,7 +4,7 @@ import api, { apiHeader } from "../Instance";
 export const getUserList = async (props) => {
 	const { page } = props
 	try {
-		const response = await api.get(`/user/get_list/${page}`, {
+		const response = await api.get(`/api/user/get_list/${page}`, {
 			headers: apiHeader()
 		});
 		// {
@@ -33,7 +33,7 @@ export const getUserList = async (props) => {
 export const getSearchedUserList = async (props) => {
 	const { userName, page } = props
 	try {
-		const response = await api.get(`/user/get_list/${userName}/${page}`, {
+		const response = await api.get(`/api/user/get_list/${userName}/${page}`, {
 			headers: apiHeader(),
 		});
 		// {
@@ -63,16 +63,14 @@ export const getSearchedUserList = async (props) => {
 export const deleteUser = async (props) => {
 	const { userId } = props
 	try {
+		//todo : bodyParams array로 변경된건지 확인 필요
 		const bodyParams = { "user_id": userId }
-		// const response = await api.post(`/user/delete`, {
-		// 	params: bodyParams,
-		// 	headers: apiHeader()
-		// });
+		const response = await api.post(`/api/user/delete`,
+			bodyParams,
+			{ headers: apiHeader() }
+		);
 
-		// console.log(response.status)
-		// return response.status === 200;
-		console.log(bodyParams)
-		return true;
+		return response.status === 200;
 	} catch (error) {
 		console.error("Error fetching data:", error);
 	}
@@ -82,7 +80,7 @@ export const deleteUser = async (props) => {
 export const getBmcListByUserId = async (props) => {
 	const { userId, page } = props
 	try {
-		const response = await api.get(`/user/auth/${userId}/${page}`, {
+		const response = await api.get(`/api/user/auth/${userId}/${page}`, {
 			headers: apiHeader()
 		});
 		// {
@@ -115,7 +113,7 @@ export const getBmcListByUserId = async (props) => {
 export const getSearchedBmcListByUserId = async (props) => {
 	const { userId, vendor, boa, page } = props
 	try {
-		const response = await api.get(`/user/auth/${userId}/${vendor}/${boa}/${page}`, {
+		const response = await api.get(`/api/user/auth/${userId}/${vendor}/${boa}/${page}`, {
 			headers: apiHeader()
 		});
 		// {
@@ -146,20 +144,20 @@ export const getSearchedBmcListByUserId = async (props) => {
 
 /// 사용자가 관리하는 BMC 서버 권한 삭제
 export const deleteBmcAuthByUserId = async (props) => {
-	const { userId, bmcUUID } = props
+	const { userId, bmcUUIDs } = props
 	try {
+		//todo : bodyParams array로 변경된건지 확인 필요
 		const bodyParams = {
 			"user_id": userId,
-			"bmc_UUID": bmcUUID
+			"bmc_UUID": bmcUUIDs
 		}
-		// const response = await api.post(`/user/auth/delete`, {
-		// 	params: bodyParams,
-		// 	headers: apiHeader()
-		// });
-
-		// return response.data;
-		console.log(bodyParams)
-		return true;
+		const response = await api.post(`/api/user/auth/delete`,
+			bodyParams,
+			{ headers: apiHeader() }
+		);
+		// response.data;
+		// { Deleted Auth BMC UUID : UUID_001 }
+		return response.status === 200;
 	} catch (error) {
 		console.error("Error fetching data:", error);
 	}
@@ -169,7 +167,7 @@ export const deleteBmcAuthByUserId = async (props) => {
 export const getUnjoinedBmcList = async (props) => {
 	const { userId } = props
 	try {
-		const response = await api.get(`/user/bmc_unjoin/${userId}`, {
+		const response = await api.get(`/api/user/bmc_unjoin/${userId}`, {
 			headers: apiHeader()
 		});
 		// {
@@ -202,7 +200,7 @@ export const getSearchedUnjoinedBmcList = async (props) => {
 	console.log(userId, vendor, boa)
 	console.log(`/user/bmc_unjoin/${userId}/${vendor}/${boa}`)
 	try {
-		const response = await api.get(`/user/bmc_unjoin/${userId}/${vendor}/${boa}`, {
+		const response = await api.get(`/api/user/bmc_unjoin/${userId}/${vendor}/${boa}`, {
 			headers: apiHeader()
 		});
 		// {
@@ -233,15 +231,18 @@ export const getSearchedUnjoinedBmcList = async (props) => {
 export const updateUserBmcAuth = async (props) => {
 	const { bmcUUIDList, authorization, userId } = props
 	try {
-		const bodyParams = { "bmc_UUID": bmcUUIDList, "user_id": userId, "authorization": authorization }
-		// const response = await api.post(`/user/auth/add`, {
-		// 	params: bodyParams,
-		// 	headers: apiHeader()
-		// });
-
-		// return response.data;
-		console.log(bodyParams)
-		return true;
+		const bodyParams = {
+			"bmc_UUID": bmcUUIDList,
+			"user_id": userId,
+			"authorization": authorization
+		}
+		const response = await api.post(`/api/user/auth/add`,
+			bodyParams,
+			{ headers: apiHeader() }
+		);
+		// return response.data 
+		// {Add Auth BMC UUID : uuid_001}
+		return response.status === 200;
 	} catch (error) {
 		console.error("Error fetching data:", error);
 	}

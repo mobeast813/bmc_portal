@@ -6,7 +6,7 @@ export const login = async (props) => {
 	const { userId, password } = props
 	const bodyParams = { "user_id": userId, "user_pw": password }
 	try {
-		const response = await api.post(`/login`, bodyParams);
+		const response = await api.post(`/api/login`, bodyParams);
 		return response.data;
 	} catch (error) {
 		console.error("Error fetching data:", error);
@@ -21,7 +21,7 @@ export const checkUserIdDuplication = async (props) => {
 	const bodyParams = { "user_id": userId }
 	console.log(bodyParams)
 	try {
-		const response = await api.post(`/id_check`, bodyParams);
+		const response = await api.post(`/api/id_check`, bodyParams);
 		return response.status === 200;
 	} catch (error) {
 		console.error("Error fetching data:", error);
@@ -39,10 +39,11 @@ export const registerUser = async (props) => {
 		"boa": boaList
 	}
 	try {
-		// const response = await api.post(`/user_registration`, bodyParams);
-		// return response.status === 200;
-		console.log(bodyParams)
-		return true;
+		const response = await api.post(`/api/user_registration`, bodyParams);
+		//response.data
+		// 성공 : New User Created Successfully.
+		// 실패(ID중복) : Duplicated ID.
+		return response.status === 200;
 	} catch (error) {
 		console.error("Error fetching data:", error);
 	}
@@ -51,7 +52,7 @@ export const registerUser = async (props) => {
 /// BOA 리스트 조회
 export const getBoaList = async () => {
 	try {
-		const response = await api.get(`/boa_list`);
+		const response = await api.get(`/api/boa_list`);
 		return response.data;
 	} catch (error) {
 		console.error("Error fetching data:", error);

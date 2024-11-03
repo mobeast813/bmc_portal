@@ -93,7 +93,7 @@ const BoaGroupMain = () => {
 					title: "BOA그룹 삭제 확인",
 					msg: `${selectedIds.length}개의 BOA 그룹을 삭제하시겠습니까?`,
 					onConfirm: () => {
-						deleteBoaGroup({ boaId: selectedIds }).then((response) => {
+						deleteBoaGroup({ boaIds: selectedIds }).then((response) => {
 							if (response) {
 								dispatch({ type: "modal", showAlertModal: { isShow: true, title: "삭제 완료", msg: "BOA그룹 삭제를 완료하였습니다." } });
 								reloadData()

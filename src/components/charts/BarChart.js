@@ -2,10 +2,12 @@ import { CCard, CCardTitle } from "@coreui/react";
 import { CChart } from "@coreui/react-chartjs";
 import ChartDataLabels from 'chartjs-plugin-datalabels'
 import PropTypes from 'prop-types'
+import { useSelector } from "react-redux";
 
 
 const BarChart = (props) => {
 	const { title, bgColors, labels, data } = props
+	const colorMode = useSelector((state) => state.theme);
 
 	const borderWidth = 0;
 	const borderColor = 'white';
@@ -23,68 +25,132 @@ const BarChart = (props) => {
 	dataSet.warning.push(data.mem_warning)
 
 	return (
-		<CCard className="p-4 mt-2 me-2">
-			<CCardTitle>{title}</CCardTitle>
-			<CChart
-				type="bar"
-				customTooltips={false}
-				width={300}
-				height={300}
-				data={{
-					labels: labels,
-					datasets: [
-						{
-							label: 'Critical',
-							backgroundColor: bgColors[0],
-							data: dataSet.critical,
-							borderWidth: borderWidth,
-							borderColor: borderColor,
-							stack: 'Stack 0',
-						},
-						{
-							label: 'Warning',
-							backgroundColor: bgColors[1],
-							data: dataSet.warning,
-							borderWidth: borderWidth,
-							borderColor: borderColor,
-							stack: 'Stack 0',
-						},
-						{
-							label: 'OK',
-							backgroundColor: bgColors[2],
-							data: dataSet.ok,
-							borderWidth: borderWidth,
-							borderColor: borderColor,
-							stack: 'Stack 0',
-						},
-					],
-				}}
-				plugins={[ChartDataLabels]}
-				options={{
-					responsive: false,
-					plugins: {
-						datalabels: {
+		colorMode === "light" ?
+			<CCard className="p-4 mt-2 me-2">
+				<></>
+				<CCardTitle>{title}</CCardTitle>
+				<CChart
+					type="bar"
+					customTooltips={false}
+					width={300}
+					height={300}
+					data={{
+						labels: labels,
+						datasets: [
+							{
+								label: 'Critical',
+								backgroundColor: bgColors[0],
+								data: dataSet.critical,
+								borderWidth: borderWidth,
+								borderColor: borderColor,
+								stack: 'Stack 0',
+							},
+							{
+								label: 'Warning',
+								backgroundColor: bgColors[1],
+								data: dataSet.warning,
+								borderWidth: borderWidth,
+								borderColor: borderColor,
+								stack: 'Stack 0',
+							},
+							{
+								label: 'OK',
+								backgroundColor: bgColors[2],
+								data: dataSet.ok,
+								borderWidth: borderWidth,
+								borderColor: borderColor,
+								stack: 'Stack 0',
+							},
+						],
+					}}
+					plugins={[ChartDataLabels]}
+					options={{
+						responsive: false,
+						plugins: {
+							datalabels: {
 
-							color: 'black',
-							font: { size: 13 }
-						},
-						tooltips: {
-							enabled: false,
+								color: 'black',
+								font: { size: 13 }
+							},
+							tooltips: {
+								enabled: false,
 
-						},
-						legend: {
-							position: 'bottom',
-							display: true,
-							labels: {
-								boxWidth: 15,
-								color: '#fff',
+							},
+							legend: {
+								position: 'bottom',
+								display: true,
+								labels: {
+									boxWidth: 15,
+									color: '#000',
+								}
 							}
-						}
-					},
-				}}
-			/>
+						},
+					}}
+				/>
 
-		</CCard >
+			</CCard > :
+			<CCard className="p-4 mt-2 me-2">
+				<CCardTitle>{title}</CCardTitle>
+				<CChart
+					type="bar"
+					customTooltips={false}
+					width={300}
+					height={300}
+					data={{
+						labels: labels,
+						datasets: [
+							{
+								label: 'Critical',
+								backgroundColor: bgColors[0],
+								data: dataSet.critical,
+								borderWidth: borderWidth,
+								borderColor: borderColor,
+								stack: 'Stack 0',
+							},
+							{
+								label: 'Warning',
+								backgroundColor: bgColors[1],
+								data: dataSet.warning,
+								borderWidth: borderWidth,
+								borderColor: borderColor,
+								stack: 'Stack 0',
+							},
+							{
+								label: 'OK',
+								backgroundColor: bgColors[2],
+								data: dataSet.ok,
+								borderWidth: borderWidth,
+								borderColor: borderColor,
+								stack: 'Stack 0',
+							},
+						],
+					}}
+					plugins={[ChartDataLabels]}
+					options={{
+						responsive: false,
+						plugins: {
+							datalabels: {
+
+								color: 'black',
+								font: { size: 13 }
+							},
+							tooltips: {
+								enabled: false,
+
+							},
+							legend: {
+								position: 'bottom',
+								display: true,
+								labels: {
+									boxWidth: 15,
+									color: '#fff',
+								}
+							}
+						},
+					}}
+				/>
+
+			</CCard >
 	);
 }
 

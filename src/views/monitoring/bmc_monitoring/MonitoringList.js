@@ -122,7 +122,7 @@ const MonitoringList = ({ list, callback }) => {
 							<CTableDataCell>{item.volt}</CTableDataCell>
 							<CTableDataCell>
 								<Link onClick={() => {
-									showControlPopup("fan", item.bmcUUID, item.bmcIp, item.power, item.fan)
+									showControlPopup("fan", item.bmcUUID, item.bmcIp, item.fan, item.fan)
 								}}>
 									{item.fan}
 								</Link>
@@ -144,8 +144,6 @@ const MonitoringList = ({ list, callback }) => {
 			<PowerAndFanContorlModal
 				bmcUUID={selectedItem.bmcUUID}
 				bmcIp={selectedItem.bmcIp}
-				powerValue={selectedItem.powerValue}
-				fanValue={selectedItem.fanValue}
 				visible={contorlModalVisible}
 				setVisible={setContorlModalVisible}
 				initTab={selectedControlMenu}

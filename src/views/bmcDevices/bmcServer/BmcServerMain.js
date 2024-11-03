@@ -140,7 +140,7 @@ const BmcServerMain = () => {
 					title: "BMC서버 삭제 확인",
 					msg: `${selectedIds.length}개의 BMC 서버를 삭제하시겠습니까?`,
 					onConfirm: () => {
-						deleteBmcServer({ bmcUUID: selectedIds }).then((response) => {
+						deleteBmcServer({ bmcUUIDs: selectedIds }).then((response) => {
 							if (response) {
 								dispatch({ type: "modal", showAlertModal: { isShow: true, title: "삭제 완료", msg: "BMC서버 삭제를 완료하였습니다." } });
 								reloadData()

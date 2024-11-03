@@ -33,7 +33,7 @@ api.interceptors.response.use(
 					return;
 				case 401:
 					console.log("to login!!");
-					window.location.href = "/"; // 로그인 페이지로 이동
+					// window.location.href = "/"; // 로그인 페이지로 이동
 					return;
 				case 404:
 					// window.location.href = "/404"

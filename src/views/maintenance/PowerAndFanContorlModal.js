@@ -1,16 +1,20 @@
 import { CCardText, CCardTitle, CCol, CForm, CFormCheck, CFormLabel, CModal, CModalBody, CModalFooter, CModalHeader, CModalTitle, CRow, CTab, CTabContent, CTabList, CTabPanel, CTabs } from "@coreui/react";
 import ButtonPrimary from "../../components/buttons/ButtonPrimary";
 import { useEffect, useState } from "react";
-import { updateFanControlSet, updatePowerControlSet } from "../../apis/maintenance/Maintenance";
+import { getFanCurrentStatus, getPowerCurrentStatus, updateFanControlSet, updatePowerControlSet } from "../../apis/maintenance/Maintenance";
 import { useDispatch } from "react-redux";
 import ButtonSecondary from "../../components/buttons/ButtonSecondary";
 
 const PowerAndFanContorlModal = (props) => {
-	const { bmcUUID, bmcIp, powerValue, fanValue, visible, setVisible, initTab, callBack } = props;
+	const { bmcUUID, bmcIp, visible, setVisible, initTab, callBack } = props;
 
 	const dispatch = useDispatch();
 	const [selectedItem, setSelectedItem] = useState("0");
-	const [selectedTab, setSelectedTab] = useState(initTab ? initTab : "power");
+	const [selectedTab, setSelectedTab] = useState("power");
+	const [currentPowerStatus, setCurrentPowerStatus] = useState();
+	const [currentFanStatus, setCurrentFanStatus] = useState();
+
+
 
 	const clearAndClose = () => {
 		setSelectedItem(0)
@@ -19,7 +23,30 @@ const PowerAndFanContorlModal = (props) => {
 
 	useEffect(() => {
 		onSelectTap(initTab)
-	}, [initTab])
+		console.log("useEffect initTab", selectedTab, initTab)
+	}, [visible])
+
+	useEffect(() => {
+		if (bmcUUID) {
+			if (selectedTab === "power") {
+				getPowerCurrentStatus({ bmcUUID: bmcUUID })
+					.then((result) => {
+						setCurrentPowerStatus(result.power_status);
+					}).catch((error) => {
+						console.log(error)
+						dispatch({ type: "modal", showAlertModal: { isShow: true, title: "⚠️ 에러", msg: "현재 상태를 가져오지 못했습니다.\n다시 시도해보세요" } });
+					});
+			} else {
+				getFanCurrentStatus({ bmcUUID: bmcUUID })
+					.then((result) => {
+						setCurrentFanStatus(result.fan_status);
+					}).catch((error) => {
+						console.log(error)
+						dispatch({ type: "modal", showAlertModal: { isShow: true, title: "⚠️ 에러", msg: "현재 상태를 가져오지 못했습니다.\n다시 시도해보세요" } });
+					});
+			}
+		}
+	}, [selectedTab])
 
 	const onSelectTap = (tab) => {
 		setSelectedTab(tab)
@@ -47,7 +74,7 @@ const PowerAndFanContorlModal = (props) => {
 		if (selectedItem) {
 			if (selectedTab === "power") {
 				//Power Control
-				updatePowerControlSet({ powerOption: selectedItem, bmcUUID: bmcUUID, bmcIp: bmcIp })
+				updatePowerControlSet({ powerOption: selectedItem, bmcUUID: bmcUUID })
 					.then((result) => {
 						if (result) {
 							dispatch({ type: "modal", showAlertModal: { isShow: true, title: "전원설정 완료", msg: "전원설정을 완료하였습니다." } });
@@ -62,18 +89,18 @@ const PowerAndFanContorlModal = (props) => {
 					});
 			} else {
 				//Fan Control
-				updateFanControlSet({ fanOption: selectedItem, bmcUUID: bmcUUID, bmcIp: bmcIp })
+				updateFanControlSet({ fanOption: selectedItem, bmcUUID: bmcUUID })
 					.then((result) => {
 						if (result) {
-							dispatch({ type: "modal", showAlertModal: { isShow: true, title: "전원설정 완료", msg: "전원설정을 완료하였습니다." } });
+							dispatch({ type: "modal", showAlertModal: { isShow: true, title: "FAN설정 완료", msg: "FAN설정을 완료하였습니다." } });
 							callBack()
 						} else {
-							dispatch({ type: "modal", showAlertModal: { isShow: true, title: "⚠️ 알림", msg: "전원설정에 실패하였습니다." } });
+							dispatch({ type: "modal", showAlertModal: { isShow: true, title: "⚠️ 알림", msg: "FAN설정에 실패하였습니다." } });
 						}
 						clearAndClose()
 					}).catch((error) => {
 						console.log(error)
-						dispatch({ type: "modal", showAlertModal: { isShow: true, title: "⚠️ 에러", msg: "전원설정에 문제가 있습니다.\n다시 시도해보세요" } });
+						dispatch({ type: "modal", showAlertModal: { isShow: true, title: "⚠️ 에러", msg: "FAN설정에 문제가 있습니다.\n다시 시도해보세요" } });
 					});
 			}
 		} else {
@@ -91,7 +118,10 @@ const PowerAndFanContorlModal = (props) => {
 				<CModalTitle id="VerticallyCenteredExample">Maintenance 관리</CModalTitle>
 			</CModalHeader>
 			<CModalBody className="text-center m-0">
-				<CTabs activeItemKey="power" onChange={(e) => { onSelectTap(e) }}>
+				<CTabs activeItemKey={selectedTab ? selectedTab : "power"} onChange={(e) => {
+					console.log(e)
+					onSelectTap(e)
+				}}>
 					<CTabList variant="tabs">
 						<CTab itemKey="power">Power Control</CTab>
 						<CTab itemKey="fan">FAN Control</CTab>
@@ -100,7 +130,7 @@ const PowerAndFanContorlModal = (props) => {
 						<CTabPanel className="p-3" itemKey="power">
 							<CCardTitle className="text-start mb-3 mt-4 fw-bolder fst-italic">Power Control</CCardTitle>
 							<hr style={{ color: "white", height: 0.1 }} />
-							<CCardTitle className="text-start ps-3 pb-5 pt-4 text-success">Host is currently {powerValue}</CCardTitle>
+							<CCardTitle className="text-start ps-3 pb-5 pt-4 text-success">Host is currently {currentPowerStatus}</CCardTitle>
 							<CRow className="m-1 mb-5">
 								{
 									powerControlRadioButtonList.map((item, index) => (
@@ -118,7 +148,7 @@ const PowerAndFanContorlModal = (props) => {
 						<CTabPanel className="p-3" itemKey="fan">
 							<CCardTitle className="text-start mb-3 mt-4 fw-bolder fst-italic">FAN Control</CCardTitle>
 							<hr style={{ color: "white", height: 0.1 }} />
-							<CCardTitle className="text-start ps-3 pb-5 pt-4 text-success">Current FAN Mode is {fanValue}</CCardTitle>
+							<CCardTitle className="text-start ps-3 pb-5 pt-4 text-success">Current FAN Mode is {currentFanStatus}</CCardTitle>
 							<CRow className="m-1 mb-5">
 								{
 									fanControlRadioButtonList.map((item, index) => (

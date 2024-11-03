@@ -5,7 +5,7 @@ import api, { apiHeader } from "../Instance";
 export const getBmcServerList = async (props) => {
 	const { userId, page } = props
 	try {
-		const response = await api.get(`/bmc/registration/list/${userId}/${page}`, {
+		const response = await api.get(`/api/bmc/registration/list/${userId}/${page}`, {
 			headers: apiHeader(),
 		});
 		return response.data;
@@ -19,12 +19,12 @@ export const getSearchedBmcServerList = async (props) => {
 	const { userId, join, vendor, boaName, page } = props
 	try {
 		if (join === 0 && vendor === 0 && boaName === 0) {
-			const response = await api.get(`/bmc/registration/list/${userId}/${page}`, {
+			const response = await api.get(`/api/bmc/registration/list/${userId}/${page}`, {
 				headers: apiHeader(),
 			});
 			return response.data;
 		} else {
-			const response = await api.get(`/bmc/registration/list/${userId}/${join}/${vendor}/${boaName}/${page}`, {
+			const response = await api.get(`/api/bmc/registration/list/${userId}/${join}/${vendor}/${boaName}/${page}`, {
 				headers: apiHeader(),
 			});
 			return response.data;
@@ -38,17 +38,15 @@ export const getSearchedBmcServerList = async (props) => {
 
 ///BMC 서버 삭제 
 export const deleteBmcServer = async (props) => {
-	const { bmcUUID } = props
+	const { bmcUUIDs } = props
 	try {
-		const bodyParams = { "bmc_UUID": bmcUUID }
-		//todo : 테스트 가능할때 풀기
-		// const response = await api.post(`/bmc/registration/delete`, {
-		// 	bodyParams,
-		// 	headers: apiHeader(),
-		// });
-		// return response.status === 200;
-		console.log(bodyParams)
-		return true;
+		//todo : bodyParams array로 변경된건지 확인 필요
+		const bodyParams = { "bmc_UUID": bmcUUIDs }
+		const response = await api.post(`/api/bmc/registration/delete`,
+			bodyParams,
+			{ headers: apiHeader() }
+		);
+		return response.status === 200;
 	} catch (error) {
 		console.error("Error fetching data:", error);
 	}
@@ -70,13 +68,11 @@ export const registerBmcServer = async (props) => {
 			"boa_name": boaGroup
 		}
 		//todo : 테스트 가능할때 열기
-		// const response = await api.post(`/bmc/registration/new`, {
-		// 	bodyParams,
-		// 	headers: apiHeader,
-		// });
-		// return response.status === 200;
-		console.log(bodyParams)
-		return true;
+		const response = await api.post(`/api/bmc/registration/new`,
+			bodyParams,
+			{ headers: apiHeader() }
+		);
+		return response.status === 200;
 	} catch (error) {
 		console.error("Error fetching data:", error);
 	}
@@ -88,7 +84,7 @@ export const getBoaGroupList = async (props) => {
 	const { userId, page } = props
 	console.log(userId, page)
 	try {
-		const response = await api.get(`/integration/boa/${userId}/${page}`, {
+		const response = await api.get(`/api/integration/boa/${userId}/${page}`, {
 			headers: apiHeader(),
 		});
 
@@ -100,17 +96,16 @@ export const getBoaGroupList = async (props) => {
 
 ///BOA 그룹 삭제
 export const deleteBoaGroup = async (props) => {
-	const { boaId } = props
+	const { boaIds } = props
 
+	//todo : bodyParams array로 변경된건지 확인 필요
 	try {
-		const bodyParams = { "boa_id": boaId }
-		// const response = await api.post(`/boa/delete`, {
-		// 	bodyParams,
-		// 	headers: apiHeader(),
-		// });
-		// return response.status === 200;
-		console.log(bodyParams)
-		return true;
+		const bodyParams = { "boa_id": boaIds }
+		const response = await api.post(`/api/boa/delete`,
+			bodyParams,
+			{ headers: apiHeader() }
+		);
+		return response.status === 200;
 	} catch (error) {
 		console.error("Error fetching data:", error);
 	}
@@ -129,15 +124,11 @@ export const registerBoaGroup = async (props) => {
 			"host_pw": hostPassword,
 			"description": description,
 		}
-		// const response = await api.post(`/boa/new`, {
-		// 	bodyParams,
-		// 	headers: apiHeader(),
-		// });
-		// return response.status === 200;
-
-		// todo : 추후 테스트 가능할때 삭제
-		console.log(bodyParams)
-		return true;
+		const response = await api.post(`/api/boa/new`,
+			bodyParams,
+			{ headers: apiHeader() }
+		);
+		return response.status === 200;
 	} catch (error) {
 		console.error("Error fetching data:", error);
 	}

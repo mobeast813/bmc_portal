@@ -9,7 +9,7 @@ export const getDashboardVender = async (props) => {
 
 	console.log(apiHeader())
 	try {
-		const response = await api.get(`/bmc/dashboard/vendor/${userId}`, {
+		const response = await api.get(`/api/bmc/dashboard/vendor/${userId}`, {
 			headers: apiHeader(),
 		});
 		// {
@@ -34,7 +34,7 @@ export const getDashboardVender = async (props) => {
 export const getDashboardJoin = async (props) => {
 	const { userId } = props
 	try {
-		const response = await api.get(`/bmc/dashboard/join/${userId}`, {
+		const response = await api.get(`/api/bmc/dashboard/join/${userId}`, {
 			headers: apiHeader(),
 		});
 		// {
@@ -58,7 +58,7 @@ export const getDashboardJoin = async (props) => {
 export const getDashboardBoa = async (props) => {
 	const { userId } = props
 	try {
-		const response = await api.get(`/bmc/dashboard/boa/${userId}`, {
+		const response = await api.get(`/api/bmc/dashboard/boa/${userId}`, {
 			headers: apiHeader(),
 		});
 		// {
@@ -85,7 +85,7 @@ export const getDashboardBoa = async (props) => {
 export const getDashboardPower = async (props) => {
 	const { userId } = props
 	try {
-		const response = await api.get(`/bmc/dashboard/power/${userId}`, {
+		const response = await api.get(`/api/bmc/dashboard/power/${userId}`, {
 			headers: apiHeader(),
 		});
 		// {
@@ -108,7 +108,7 @@ export const getDashboardPower = async (props) => {
 export const getDashboardTemperature = async (props) => {
 	const { userId, boaName } = props
 	try {
-		const response = await api.get(`/bmc/dashboard/temp/${userId}/${boaName}`, {
+		const response = await api.get(`/api/bmc/dashboard/temp/${userId}/${boaName}`, {
 			headers: apiHeader(),
 		});
 		// {
@@ -135,7 +135,7 @@ export const getDashboardTemperature = async (props) => {
 export const getDashboardPowerSupply = async (props) => {
 	const { userId, boaName } = props
 	try {
-		const response = await api.get(`/bmc/dashboard/psu/${userId}/${boaName}`, {
+		const response = await api.get(`/api/bmc/dashboard/psu/${userId}/${boaName}`, {
 			headers: apiHeader(),
 		});
 		// {
@@ -159,7 +159,7 @@ export const getDashboardPowerSupply = async (props) => {
 export const getDashboardVoltage = async (props) => {
 	const { userId, boaName } = props
 	try {
-		const response = await api.get(`/bmc/dashboard/volt/${userId}/${boaName}`, {
+		const response = await api.get(`/api/bmc/dashboard/volt/${userId}/${boaName}`, {
 			headers: apiHeader(),
 		});
 		// {
@@ -183,7 +183,7 @@ export const getDashboardVoltage = async (props) => {
 export const getDashboardFan = async (props) => {
 	const { userId, boaName } = props
 	try {
-		const response = await api.get(`/bmc/dashboard/fan/${userId}/${boaName}`, {
+		const response = await api.get(`/api/bmc/dashboard/fan/${userId}/${boaName}`, {
 			headers: apiHeader(),
 		});
 		// {

@@ -27,7 +27,7 @@ const Temperature = (props) => {
 			<CRow>
 				<div className="d-flex flex-wrap mb-4 me-4" style={{ padding: 0 }}>
 					<BarChart title="Status - Temperature"
-						bgColors={ColorUtils.CHART_COLORS.STATUS} labels={["Critical", "Warning", "OK"]} data={dashBoardData} />
+						bgColors={ColorUtils.CHART_COLORS.STATUS} labels={["CPU", "MEMORY"]} data={dashBoardData} />
 				</div>
 			</CRow >
 		</>

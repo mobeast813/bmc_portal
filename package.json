@@ -13,7 +13,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.7.7",
     "chartjs-plugin-datalabels": "^2.2.0",
-    "gh-pages": "^6.2.0",
+    "http-proxy-middleware": "^3.0.3",
     "prop-types": "^15.8.1",
     "react": "^18.3.1",
     "react-cookie": "^7.2.1",
@@ -34,7 +34,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -56,6 +58,5 @@
   },
   "devDependencies": {
     "sass": "^1.80.3"
-  },
-  "proxy": "http://keti.pro:9099"
+  }
 }

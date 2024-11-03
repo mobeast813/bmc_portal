@@ -6,10 +6,9 @@ import api, { apiHeader } from "../Instance";
 export const getMonitorBmcServerList = async (props) => {
 	const { userId, page } = props
 	try {
-		const response = await api.get(`/bmc/monitoring/${userId}/${page}`, {
+		const response = await api.get(`/api/bmc/monitoring/${userId}/${page}`, {
 			headers: apiHeader(),
 		});
-		console.log(response.data);
 		// {
 		//  "pages": 10,
 		//  "vendor": ["KTNF", …],
@@ -72,7 +71,7 @@ export const getMonitorBmcServerList = async (props) => {
 export const getSearchedMonitorBmcServerList = async (props) => {
 	const { userId, vendor, boaName, power, fan, page } = props
 	try {
-		const response = await api.get(`/bmc/monitoring/${userId}/${vendor}/${boaName}/${power}/${fan}/${page}`, {
+		const response = await api.get(`/api/bmc/monitoring/${userId}/${vendor}/${boaName}/${power}/${fan}/${page}`, {
 			headers: apiHeader(),
 		});
 		// {
@@ -133,7 +132,7 @@ export const getSearchedMonitorBmcServerList = async (props) => {
 export const getMonitorSensorEventLog = async (props) => {
 	const { userId, page } = props
 	try {
-		const response = await api.get(`/bmc/sel/${userId}/${page}`, {
+		const response = await api.get(`/api/bmc/sel/${userId}/${page}`, {
 			headers: apiHeader(),
 		});
 		// {
@@ -191,7 +190,7 @@ export const getSearchedMonitorSensorEventLog = async (props) => {
 	try {
 
 		console.log(`/bmc/sel/${userId}/${vendor}/${boaName}/${sensorType}/${startDate}/${endDate}/${page}`)
-		const response = await api.get(`/bmc/sel/${userId}/${vendor}/${boaName}/${sensorType}/${startDate}/${endDate}/${page}`, {
+		const response = await api.get(`/api/bmc/sel/${userId}/${vendor}/${boaName}/${sensorType}/${startDate}/${endDate}/${page}`, {
 			headers: apiHeader(),
 		});
 		// {
